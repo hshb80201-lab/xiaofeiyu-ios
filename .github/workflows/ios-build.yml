@@ -1,0 +1,76 @@
+name: Build iOS unsigned IPA
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "ios-source.zip"
+      - ".github/workflows/ios-build.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: macos-14
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Unzip iOS source
+        run: |
+          set -e
+          if [ -f ios-source.zip ]; then
+            unzip -q -o ios-source.zip -d .
+          fi
+          ls -la
+          test -f project.yml
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      - name: Build unsigned .app (arm64, iphoneos)
+        run: |
+          set -e
+          xcodebuild \
+            -project XiaoFeiYu.xcodeproj \
+            -target XiaoFeiYu \
+            -configuration Release \
+            -sdk iphoneos \
+            -derivedDataPath build \
+            ARCHS=arm64 \
+            ONLY_ACTIVE_ARCH=NO \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            build
+
+          APP="build/Build/Products/Release-iphoneos/XiaoFeiYu.app"
+          test -d "$APP"
+          /usr/libexec/PlistBuddy -c "Print :CFBundleIdentifier" "$APP/Info.plist"
+          /usr/libexec/PlistBuddy -c "Print :MinimumOSVersion" "$APP/Info.plist" || true
+          lipo -info "$APP/XiaoFeiYu" || true
+
+      - name: Package Payload into unsigned IPA (Store compression)
+        run: |
+          set -e
+          APP="build/Build/Products/Release-iphoneos/XiaoFeiYu.app"
+          rm -rf Payload XiaoFeiYu-unsigned.ipa
+          mkdir Payload
+          cp -R "$APP" Payload/
+          # -0 = 仅存储/不压缩，部分手机自签工具对 deflate 解包不友好
+          zip -q -r -0 XiaoFeiYu-unsigned.ipa Payload
+          echo "---- IPA contents ----"
+          unzip -l XiaoFeiYu-unsigned.ipa | head -30
+
+      - name: Upload unsigned IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: XiaoFeiYu-unsigned-ipa
+          path: XiaoFeiYu-unsigned.ipa
+          if-no-files-found: error
