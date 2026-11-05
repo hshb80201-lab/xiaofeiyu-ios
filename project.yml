@@ -5,6 +5,7 @@ options:
     iOS: "16.0"
   createIntermediateGroups: true
   xcodeVersion: "15.4"
+  postGenCommand: sed -i '' -E 's/objectVersion = [0-9]+/objectVersion = 60/' XiaoFeiYu.xcodeproj/project.pbxproj
 
 configs:
   Debug: debug
