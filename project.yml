@@ -5,6 +5,12 @@ options:
     iOS: "16.0"
   createIntermediateGroups: true
 
+configs:
+  Debug: debug
+  Release: release
+  Release-Shared: release
+  Release-Clean: release
+
 targets:
   XiaoFeiYu:
     type: application
@@ -15,8 +21,8 @@ targets:
       path: XiaoFeiYu/Info.plist
       properties:
         CFBundleDisplayName: 小肥鱼下载器
-        CFBundleShortVersionString: "1.0.0"
-        CFBundleVersion: "1"
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         UILaunchScreen: {}
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
@@ -30,6 +36,17 @@ targets:
         SWIFT_VERSION: "5.9"
         TARGETED_DEVICE_FAMILY: "1"
         DEVELOPMENT_TEAM: ""
+      configs:
+        Release-Shared:
+          PRODUCT_BUNDLE_IDENTIFIER: com.xiaofeiyu.app.shared
+          MARKETING_VERSION: "1.12.0"
+          CURRENT_PROJECT_VERSION: "11200"
+          SWIFT_ACTIVE_COMPILATION_CONDITIONS: "$(inherited) SHARED_VERSION"
+        Release-Clean:
+          PRODUCT_BUNDLE_IDENTIFIER: com.xiaofeiyu.app.clean
+          MARKETING_VERSION: "2.0.0"
+          CURRENT_PROJECT_VERSION: "20000"
+          SWIFT_ACTIVE_COMPILATION_CONDITIONS: "$(inherited)"
 
 schemes:
   XiaoFeiYu:
