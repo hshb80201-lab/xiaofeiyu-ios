@@ -52,9 +52,9 @@ jobs:
           set -e
           xcodebuild \
             -project XiaoFeiYu.xcodeproj \
-            -target XiaoFeiYu \
+            -scheme XiaoFeiYu \
             -configuration "$CONFIG" \
-            -sdk iphoneos \
+            -destination "generic/platform=iOS" \
             -derivedDataPath build \
             ARCHS=arm64 \
             ONLY_ACTIVE_ARCH=NO \
