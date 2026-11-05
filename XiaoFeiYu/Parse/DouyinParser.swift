@@ -44,14 +44,15 @@ struct DouyinParser {
             imageURLs.append(imageURL)
 
             var live: URL?
-            if let video = image["video"] as? [String: Any],
-               let play = video["play_addr"] as? [String: Any],
-               let urls = play["url_list"] as? [String],
-               let firstLive = urls.first {
-                live = URL(string: normalize(firstLive))
-            } else if let playAddr = video?["playAddr"] as? [[String: Any]],
-                      let src = playAddr.first?["src"] as? String {
-                live = URL(string: normalize(src))
+            if let video = image["video"] as? [String: Any] {
+                if let play = video["play_addr"] as? [String: Any],
+                   let urls = play["url_list"] as? [String],
+                   let firstLive = urls.first {
+                    live = URL(string: normalize(firstLive))
+                } else if let playAddr = video["playAddr"] as? [[String: Any]],
+                          let src = playAddr.first?["src"] as? String {
+                    live = URL(string: normalize(src))
+                }
             }
             liveURLs.append(live)
         }

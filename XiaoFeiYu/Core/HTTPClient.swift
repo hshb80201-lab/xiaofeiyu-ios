@@ -17,7 +17,7 @@ enum HTTPClient {
         let config = URLSessionConfiguration.default
         config.timeoutIntervalForRequest = 25
         config.timeoutIntervalForResource = 60
-        config.protocolClasses = [BiliCookieInterceptor.self] + (config.protocolClasses ?? [])
+        config.protocolClasses = [BiliCookieInterceptor.self as AnyClass] + (config.protocolClasses ?? [])
         return URLSession(configuration: config)
     }()
 

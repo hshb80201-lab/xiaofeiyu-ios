@@ -2,7 +2,7 @@ import Foundation
 
 /// 给 bilibili.com 请求自动注入 SESSDATA（用户号优先，内置号兜底）。
 final class BiliCookieInterceptor: URLProtocol {
-    private var task: URLSessionDataTask?
+    private var dataTask: URLSessionDataTask?
 
     override class func canInit(with request: URLRequest) -> Bool {
         guard let host = request.url?.host?.lowercased(), host.contains("bilibili.com") else {
@@ -22,7 +22,7 @@ final class BiliCookieInterceptor: URLProtocol {
             request.setValue("SESSDATA=\(sess)", forHTTPHeaderField: "Cookie")
         }
 
-        task = URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
+        dataTask = URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
             guard let self else { return }
             if let error {
                 self.client?.urlProtocol(self, didFailWithError: error)
@@ -36,10 +36,10 @@ final class BiliCookieInterceptor: URLProtocol {
             }
             self.client?.urlProtocolDidFinishLoading(self)
         }
-        task?.resume()
+        dataTask?.resume()
     }
 
     override func stopLoading() {
-        task?.cancel()
+        dataTask?.cancel()
     }
 }
