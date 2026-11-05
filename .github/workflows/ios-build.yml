@@ -33,7 +33,8 @@ jobs:
       - name: Unzip iOS source
         run: |
           set -e
-          if [ -f ios-source.zip ]; then
+          # 仓库里已有完整源码时直接用；只有只上传了 zip 才解压
+          if [ ! -f project.yml ] && [ -f ios-source.zip ]; then
             unzip -q -o ios-source.zip -d .
           fi
           test -f project.yml
