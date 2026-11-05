@@ -48,7 +48,7 @@ targets:
           PRODUCT_BUNDLE_IDENTIFIER: com.xiaofeiyu.app.clean
           MARKETING_VERSION: "2.0.0"
           CURRENT_PROJECT_VERSION: "20000"
-          SWIFT_ACTIVE_COMPILATION_CONDITIONS: "$(inherited)"
+          SWIFT_ACTIVE_COMPILATION_CONDITIONS: "$(inherited) SHOW_DISCLAIMER"
 
 schemes:
   XiaoFeiYu:

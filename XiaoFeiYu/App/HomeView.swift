@@ -5,6 +5,7 @@ struct HomeView: View {
     @StateObject private var vm = HomeViewModel()
     @Environment(\.scenePhase) private var scenePhase
     @State private var showLogin = false
+    @State private var showSettings = false
 
     var body: some View {
         ZStack {
@@ -64,6 +65,9 @@ struct HomeView: View {
         .sheet(isPresented: $showLogin) {
             BiliLoginSheet { _ in }
         }
+        .sheet(isPresented: $showSettings) {
+            SettingsView()
+        }
     }
 
     private var header: some View {
@@ -81,6 +85,13 @@ struct HomeView: View {
             } label: {
                 Image(systemName: "person.crop.circle")
                     .font(.system(size: 24))
+            }
+
+            Button {
+                showSettings = true
+            } label: {
+                Image(systemName: "gearshape")
+                    .font(.system(size: 22))
             }
         }
         .padding(.top, 8)
